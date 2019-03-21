@@ -1,56 +1,28 @@
-def create_bag_of_words(corpus, ngram_range = (0, 1), stop_words = None, stem = False,
+import pandas as pd
+import numpy as np
+import itertools
+import warnings
+import matplotlib.pyplot as plt
+
+from six.moves import zip, range
+from sklearn.model_selection import train_test_split
+import sklearn.feature_extraction.text as f_e
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.decomposition import LatentDirichletAllocation, PCA
+from sklearn.linear_model import LinearRegression, LogisticRegression, LassoLars
+from sklearn.metrics import precision_recall_curve, roc_auc_score, auc, roc_curve, r2_score
+from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+from sklearn import preprocessing
+from sklearn import model_selection as sk_ms
+
+from collections import Counter, OrderedDict
+
+import nltk
+from nltk import SnowballStemmer
+
+def create_bag_of_words(corpus, ngram_range = (1, 1), stop_words = None, stem = False,
                         min_df = 0.05, max_df = 0.95, use_idf = False):
-    """
-    Turn a corpus of text into a bag-of-words.
 
-    Parameters
-    -----------
-    corpus: ls
-        test of documents in corpus
-    ngram_range: tuple
-        range of N-gram. Default (0,1)
-    stop_words: ls
-        list of commonly occuring words that have little semantic
-        value
-    stem: bool
-        use a stemmer to stem words
-    min_df: float
-       exclude words that have a frequency less than the threshold
-    max_df: float
-        exclude words that have a frequency greater than the threshold
-    use_idf: bool
-        Re-weigh words according to the Term Frequency-Inverse Document Frequency
-        (emphasize words unique to a document, suppress words common throughout the corpus)
-
-    Returns
-    -------
-    bag_of_words: scipy sparse matrix
-        scipy sparse matrix of text
-    features:
-        list of words
-    """
-
-    import pandas as pd
-    import numpy as np
-    import itertools
-    import warnings
-    import matplotlib.pyplot as plt
-
-    from six.moves import zip, range
-    from sklearn.model_selection import train_test_split
-    import sklearn.feature_extraction.text as f_e
-    from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-    from sklearn.decomposition import LatentDirichletAllocation, PCA
-    from sklearn.linear_model import LinearRegression, LogisticRegression, LassoLars
-    from sklearn.metrics import precision_recall_curve, roc_auc_score, auc, roc_curve, r2_score
-    from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-    from sklearn import preprocessing
-    from sklearn import model_selection as sk_ms
-
-    from collections import Counter, OrderedDict
-
-    import nltk
-    from nltk import SnowballStemmer
     #parameters for vectorizer
     ANALYZER = "word" #unit of features are single words rather then phrases of words
     STRIP_ACCENTS = 'unicode'
@@ -58,6 +30,7 @@ def create_bag_of_words(corpus, ngram_range = (0, 1), stop_words = None, stem = 
     if stem:
         stemmer = nltk.SnowballStemmer("english")
         tokenize = lambda x: [stemmer.stem(i) for i in x.split()]
+        stop_words = [tokenize(x)[0] for x in stop_words]
     else:
         tokenize = None
     vectorizer = CountVectorizer(analyzer=ANALYZER,
@@ -65,10 +38,9 @@ def create_bag_of_words(corpus, ngram_range = (0, 1), stop_words = None, stem = 
                                  ngram_range=ngram_range,
                                  stop_words = stop_words,
                                  strip_accents=STRIP_ACCENTS,
-                                 min_df = min_df,
-                                 max_df = max_df)
+                                 min_df = min_df, max_df = max_df)
 
-    bag_of_words = vectorizer.fit_transform( corpus ) #transform our corpus is a bag of words
+    bag_of_words = vectorizer.fit_transform(corpus)
     features = vectorizer.get_feature_names()
 
     if use_idf:
@@ -86,28 +58,6 @@ def create_bag_of_words(corpus, ngram_range = (0, 1), stop_words = None, stem = 
 
 
 def get_word_counts(bag_of_words, feature_names):
-
-    import pandas as pd
-    import numpy as np
-    import itertools
-    import warnings
-    import matplotlib.pyplot as plt
-
-    from six.moves import zip, range
-    from sklearn.model_selection import train_test_split
-    import sklearn.feature_extraction.text as f_e
-    from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-    from sklearn.decomposition import LatentDirichletAllocation, PCA
-    from sklearn.linear_model import LinearRegression, LogisticRegression, LassoLars
-    from sklearn.metrics import precision_recall_curve, roc_auc_score, auc, roc_curve, r2_score
-    from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-    from sklearn import preprocessing
-    from sklearn import model_selection as sk_ms
-
-    from collections import Counter, OrderedDict
-
-    import nltk
-    from nltk import SnowballStemmer
 
     """
     Get the ordered word counts from a bag_of_words

@@ -41,3 +41,6 @@ def load_data_and_clean():
     # print('\n----------\n')
     # print(df['body_c'][n])
     return df_dict
+
+def retrieve_specific_data_from_id(data, id):
+    return {"headline":data["headline"][id], "body":data["body_c"][id], "label":data["label"][id]}

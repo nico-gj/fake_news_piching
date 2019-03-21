@@ -1,7 +1,8 @@
 ## Python Setup
 
 import pandas as pd
-
+import math
+from tqdm import tqdm
 
 def load_data_and_clean():
     ## Data Read In
@@ -15,28 +16,30 @@ def load_data_and_clean():
     ## Data Cleaning Headline
     df['headline'] = df['headline'].str.replace(r'\'', '')
     df['headline'] = df['headline'].str.replace(r'\"', '')
-    df['headline'] = df['headline'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\))', '')
-    #df['headline'] = df['headline'].str.replace(r'\;', '')
-    #df['headline'] = df['headline'].str.replace(r'\.', '')
-    #df['headline'] = df['headline'].str.replace(r'\:', '')
-    #df['headline'] = df['headline']
+    df['headline'] = df['headline'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\])', '')
+    df['headline'] = df['headline'].str.lower()
+    df['headline'] = df['headline'].str.split(" ")
 
-
-    ## Data Cleaning Body 
-    df['body_c'] = df['body']
 
     # Special Text Sequences
-    df['body_c'] = df['body_c'].str.replace(r'^[A-Z\s]+\s\(Reuters\)\s\-\s', '')
-    df['body_c'] = df['body_c'].str.replace(r'\bFILE\sPHOTO\:\s.+\n\(Reuters\)\s\-\s', '')
-    df['body_c'] = df['body_c'].str.replace(r'\(Reuters\)\s\-\s', '')
+    df['body'] = df['body'].str.replace(r'^[A-Z\s]+\s\(Reuters\)\s\-\s', '')
+    df['body'] = df['body'].str.replace(r'\bFILE\sPHOTO\:\s.+\n\(Reuters\)\s\-\s', '')
+    df['body'] = df['body'].str.replace(r'\(Reuters\)\s\-\s', '')
 
     # Classic Cleaning
-    df['body_c'] = df['body_c'].str.replace(r'\(.+\)', '')
-    df['body_c'] = df['body_c'].str.replace(r'\s+', ' ')
-    df['body_c'] = df['body_c'].str.replace(r'\n', ' ')
-    df['body_c'] = df['body_c'].str.replace(r'\'', '’')
-    df['body_c'] = df['body_c'].str.strip()
-
+    df['body'] = df['body'].str.replace(r'\(.+\)', '')
+    df['body'] = df['body'].str.replace(r'\s+', ' ')
+    df['body'] = df['body'].str.replace(r'\n', ' ')
+    df['body'] = df['body'].str.replace(r'\'', '’')
+    df['body'] = df['body'].str.replace(r'  ', '')
+    df['body'] = df['body'].str.replace(r'---', '')
+    df['body'] = df['body'].str.replace(r'\#', '')
+    df['body'] = df['body'].str.replace(r'https?:\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
+    df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
+    df['body'] = df['body'].str.strip()
+    df['body'] = df['body'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\]|\-|\-)', '')
+    df['body'] = df['body'].str.lower()
+    #df['body'] = df['body'].str.split(" ")
 
     ## Export
     df_dict = df.to_dict()
@@ -45,12 +48,12 @@ def load_data_and_clean():
     # n=234
     # print(df['body'][n])
     # print('\n----------\n')
-    # print(df['body_c'][n])
+    # print(df['body'][n])
     return df_dict
 
 
 def retrieve_specific_data_from_id(data, id):
-    return {"headline":data["headline"][id], "body":data["body_c"][id], "label":data["label"][id]}
+    return {"headline":data["headline"][id], "body":data["body"][id], "label":data["label"][id]}
 
 
 def get_all_headlines(data):
@@ -60,3 +63,7 @@ def get_all_headlines(data):
 def get_all_labels(data):
     labels = list()
     return [elem[1] for elem in sorted(data["label"].items())]
+
+def get_all_bodies(data):
+    bodies = list()
+    return [elem[1] for elem in sorted(data["body"].items())]

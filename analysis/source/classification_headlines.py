@@ -50,15 +50,24 @@ def create_dataset(lists):
     dictionnary_word_to_id = {}
     for i, elem in enumerate(words_kept):
         dictionnary_word_to_id[elem[0]] = i
+
+    #New lists with remaining words
+    new_lists = list()
+    for elem in tqdm(lists):
+        new_sub_list = [word for word in elem if word in dictionnary_word_to_id]
+        new_lists.append(new_sub_list)
+    lists = new_lists
     
     pairs = list()
     for elem in tqdm(lists):
         for i in range(len(elem)-(1+window_size)):
             for elem1, elem2 in combinations(elem[i:i+(1+window_size)], 2):
                 pairs.append([dictionnary_word_to_id[elem1], dictionnary_word_to_id[elem2]])
-    print(len(pairs))
+    return lists, dictionnary_word_to_id, pairs
 
-create_dataset(bodies)
+lists, dictionnary_word_to_id, pairs = create_dataset(bodies)
+
+
 
 #counter_occurences = Counter(list(counter.values()))
 #counter_frequencies = from_counter_occurences_to_counter_frequencies(counter_occurences)

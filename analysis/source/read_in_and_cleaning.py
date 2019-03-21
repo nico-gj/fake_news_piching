@@ -42,6 +42,7 @@ def load_data_and_clean():
     df['body'] = df['body'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\]|\-|\-)', '')
     df['body'] = df['body'].str.replace(r'\-', '')
     df['body'] = df['body'].str.replace(r'\/', '')
+    df['body'] = df['body'].str.replace(r'\-', '')
     df['body'] = df['body'].str.lower()
 
     df['source'] = df['urls'].str.extract(r'https?\:\/\/www\.([A-z\-])\.')

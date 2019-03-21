@@ -1,7 +1,6 @@
 ## Python Setup
 
 import pandas as pd
-from source.text_analysis import create_bag_of_words, create_topics, get_word_counts
 
 
 def load_data_and_clean():
@@ -43,4 +42,3 @@ def load_data_and_clean():
 
 def retrieve_specific_data_from_id(data, id):
     return {"headline":data["headline"][id], "body":data["body_c"][id], "label":data["label"][id]}
-

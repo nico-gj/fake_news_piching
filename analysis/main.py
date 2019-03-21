@@ -5,4 +5,3 @@ from source.read_in_and_cleaning import load_data_and_clean, retrieve_specific_d
 data = load_data_and_clean()
 
 
-

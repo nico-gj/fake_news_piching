@@ -18,7 +18,6 @@ def load_data_and_clean():
     df['headline'] = df['headline'].str.replace(r'\"', '')
     df['headline'] = df['headline'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\])', '')
     df['headline'] = df['headline'].str.lower()
-    df['headline'] = df['headline'].str.split(" ")
 
 
     # Special Text Sequences
@@ -34,12 +33,17 @@ def load_data_and_clean():
     df['body'] = df['body'].str.replace(r'  ', '')
     df['body'] = df['body'].str.replace(r'---', '')
     df['body'] = df['body'].str.replace(r'\#', '')
+    df['body'] = df['body'].str.replace(r'http//wwwconservativedailynewscom', '')
+    df['body'] = df['body'].str.replace(r'\-', '')
+    df['body'] = df['body'].str.replace(r'wwwthedailysheeplecom', '')
     df['body'] = df['body'].str.replace(r'https?:\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
     df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
     df['body'] = df['body'].str.strip()
     df['body'] = df['body'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\]|\-|\-)', '')
+    df['body'] = df['body'].str.replace(r'\-', '')
+    df['body'] = df['body'].str.replace(r'\/', '')
     df['body'] = df['body'].str.lower()
-    #df['body'] = df['body'].str.split(" ")
+    #df['body'] = df['body'].str
 
     ## Export
     df_dict = df.to_dict()
@@ -58,7 +62,7 @@ def retrieve_specific_data_from_id(data, id):
 
 def get_all_headlines(data):
     headlines = list()
-    return [elem[1] for elem in sorted(data["headline"].items())]
+    return [elem[1].split(" ") for elem in sorted(data["headline"].items())]
         
 def get_all_labels(data):
     labels = list()
@@ -66,4 +70,9 @@ def get_all_labels(data):
 
 def get_all_bodies(data):
     bodies = list()
-    return [elem[1] for elem in sorted(data["body"].items())]
+    for elem in sorted(data["body"].items()):
+        if isinstance(elem[1], float):
+            bodies.append([""])
+        else:
+            bodies.append(elem[1].split(" "))
+    return bodies

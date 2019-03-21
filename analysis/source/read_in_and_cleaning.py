@@ -12,8 +12,17 @@ def load_data_and_clean():
     # df.shape
 
 
-    ## Data Cleaning
+    ## Data Cleaning Headline
+    df['headline'] = df['headline'].str.replace(r'\'', '')
+    df['headline'] = df['headline'].str.replace(r'\"', '')
+    df['headline'] = df['headline'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\))', '')
+    #df['headline'] = df['headline'].str.replace(r'\;', '')
+    #df['headline'] = df['headline'].str.replace(r'\.', '')
+    #df['headline'] = df['headline'].str.replace(r'\:', '')
+    #df['headline'] = df['headline']
 
+
+    ## Data Cleaning Body 
     df['body_c'] = df['body']
 
     # Special Text Sequences
@@ -42,3 +51,12 @@ def load_data_and_clean():
 
 def retrieve_specific_data_from_id(data, id):
     return {"headline":data["headline"][id], "body":data["body_c"][id], "label":data["label"][id]}
+
+
+def get_all_headlines(data):
+    headlines = list()
+    return [elem[1] for elem in sorted(data["headline"].items())]
+        
+def get_all_labels(data):
+    labels = list()
+    return [elem[1] for elem in sorted(data["label"].items())]

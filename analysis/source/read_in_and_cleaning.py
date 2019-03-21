@@ -19,11 +19,11 @@ def load_data_and_clean():
     df['headline'] = df['headline'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\])', '')
     df['headline'] = df['headline'].str.lower()
 
-
     # Special Text Sequences
     df['body'] = df['body'].str.replace(r'^[A-Z\s]+\s\(Reuters\)\s\-\s', '')
     df['body'] = df['body'].str.replace(r'\bFILE\sPHOTO\:\s.+\n\(Reuters\)\s\-\s', '')
     df['body'] = df['body'].str.replace(r'\(Reuters\)\s\-\s', '')
+    df['body'] = df['body'].str.replace(r'____', '')
 
     # Classic Cleaning
     df['body'] = df['body'].str.replace(r'\(.+\)', '')
@@ -43,7 +43,8 @@ def load_data_and_clean():
     df['body'] = df['body'].str.replace(r'\-', '')
     df['body'] = df['body'].str.replace(r'\/', '')
     df['body'] = df['body'].str.lower()
-    #df['body'] = df['body'].str
+
+    df['source'] = df['urls'].str.extract(r'https?\:\/\/www\.([A-z\-])\.')
 
     ## Export
     df_dict = df.to_dict()
@@ -63,7 +64,7 @@ def retrieve_specific_data_from_id(data, id):
 def get_all_headlines(data):
     headlines = list()
     return [elem[1].split(" ") for elem in sorted(data["headline"].items())]
-        
+
 def get_all_labels(data):
     labels = list()
     return [elem[1] for elem in sorted(data["label"].items())]

@@ -45,7 +45,8 @@ def load_data_and_clean():
     df['body'] = df['body'].str.replace(r'\-', '')
     df['body'] = df['body'].str.lower()
 
-    df['source'] = df['urls'].str.extract(r'https?\:\/\/www\.([A-z\-])\.')
+    df['source'] = df['urls'].str.extract(r'https?\:\/\/www\.([A-z\-]+)\.')
+    df['source'] = df['source'].str.upper()
 
     ## Export
     df_dict = df.to_dict()
@@ -58,9 +59,11 @@ def load_data_and_clean():
     return df_dict
 
 
-def retrieve_specific_data_from_id(data, id):
-    return {"headline":data["headline"][id], "body":data["body"][id], "label":data["label"][id]}
-
+def retrieve_specific_data_from_id(in_dict, id):
+    out_dict = {}
+    for key in in_dict.keys():
+        out_dict[key]=in_dict[key][id]
+    return out_dict
 
 def get_all_headlines(data):
     headlines = list()

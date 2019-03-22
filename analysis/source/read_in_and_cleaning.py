@@ -56,32 +56,26 @@ def load_data_and_clean():
 
 def get_dico_by_id(dico, body_threshold):
     new_dict = {}
-    for id in dico.keys():
+    for i, id in enumerate(dico["headline"].keys()):
         data_id = retrieve_specific_data_from_id(dico, id)
-        if not (isinstance(data_id["body"], float) or len(data_id["body"]<body_threshold)):
-            new_dict[id] = data_id
+        if len(data_id["body"])>body_threshold:
+            new_dict[i] = data_id
     return new_dict
 
 def retrieve_specific_data_from_id(in_dict, id):
-    out_dict = {}
-    for key in in_dict.keys():
-        print(key)
-        out_dict[key] = in_dict[key][id]
-    return out_dict
+    headline = in_dict['headline'][id].split(" ")
+    label = in_dict['label'][id]
+    if isinstance(in_dict["body"][id], float):
+        body = [""]
+    else:
+        body = in_dict["body"][id].split(" ")
+    return {'headline':headline, 'label':label, 'body':body}
 
 def get_all_headlines(data):
-    headlines = list()
-    return [elem[1].split(" ") for elem in sorted(data["headline"].items())]
+    return [data[keys]["headline"] for keys in data.keys()]
 
 def get_all_labels(data):
-    labels = list()
-    return [elem[1] for elem in sorted(data["label"].items())]
+    return [data[keys]["label"] for keys in data.keys()]
 
 def get_all_bodies(data):
-    bodies = list()
-    for elem in sorted(data["body"].items()):
-        if isinstance(elem[1], float):
-            bodies.append([""])
-        else:
-            bodies.append(elem[1].split(" "))
-    return bodies
+    return [data[keys]["body"] for keys in data.keys()]

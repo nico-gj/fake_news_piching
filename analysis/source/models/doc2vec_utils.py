@@ -59,11 +59,13 @@ def create_dataset(param, lists):
 
 def generate_batch_data(param):
     if (param.index + param.batch_size < param.number_of_training_pairs):
+        batch = param.triplets[param.index : param.index + param.batch_size] 
         param.index += param.batch_size
-        return param.triplets[param.index : param.index + param.batch_size]
+        return batch
     else:
+        batch = param.triplets[param.index:]
         param.index = 0
-        return param.triplets[param.index:]
+        return batch
 
 
 #counter = get_frequency_of_words(headlines)

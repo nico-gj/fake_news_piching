@@ -1,6 +1,6 @@
 
 import numpy as np
-from read_in_and_cleaning import load_data_and_clean, get_all_labels, get_all_headlines, get_all_bodies
+from read_in_and_cleaning import load_data_and_clean, get_all_labels, get_all_headlines, get_all_bodies, get_dico_by_id
 from models.doc2vec_utils import create_dataset
 
 class Param(object):
@@ -8,6 +8,9 @@ class Param(object):
     def __init__(self):
 
         self.data = load_data_and_clean()
+        self.data_by_id = get_dico_by_id(self.data, 10)
+        print(len(self.data_by_id))
+
         self.headlines = get_all_headlines(self.data)
         self.labels = get_all_labels(self.data)
         self.bodies = get_all_bodies(self.data)

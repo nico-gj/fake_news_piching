@@ -9,9 +9,6 @@ def load_data_and_clean():
 
     df = pd.read_csv('data/raw_kaggle_data/data.csv')
     df.columns = [col.lower() for col in list(df)]
-    # df.head()
-    # df.shape
-
 
     ## Data Cleaning Headline
     df['headline'] = df['headline'].str.replace(r'\'', '')
@@ -50,19 +47,23 @@ def load_data_and_clean():
 
     ## Export
     df_dict = df.to_dict()
-
-    ## Sandbox
-    # n=234
-    # print(df['body'][n])
-    # print('\n----------\n')
-    # print(df['body'][n])
+    
     return df_dict
 
+
+def get_dico_by_id(dico, body_threshold):
+    new_dict = {}
+    for id in dico.keys():
+        data_id = retrieve_specific_data_from_id(dico, id)
+        if not (isinstance(data_id["body"], float) or len(data_id["body"]<body_threshold)):
+            new_dict[id] = data_id
+    return new_dict
 
 def retrieve_specific_data_from_id(in_dict, id):
     out_dict = {}
     for key in in_dict.keys():
-        out_dict[key]=in_dict[key][id]
+        print(key)
+        out_dict[key] = in_dict[key][id]
     return out_dict
 
 def get_all_headlines(data):

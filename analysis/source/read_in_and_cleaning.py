@@ -1,5 +1,5 @@
 ## Python Setup
-
+import numpy as np
 import pandas as pd
 import math
 from tqdm import tqdm
@@ -14,9 +14,10 @@ def load_data_and_clean():
 
 
     ## Data Cleaning Headline
-    df['headline'] = df['headline'].str.replace(r'\'', '')
-    df['headline'] = df['headline'].str.replace(r'\"', '')
-    df['headline'] = df['headline'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\])', '')
+    df['headline'] = df['headline'].str.replace(r'\(.+\)', '')
+    df['headline'] = df['headline'].str.replace(r'\n', ' ')
+    df['headline'] = df['headline'].str.replace(r'\W+|\d+', ' ')
+    df['headline'] = df['headline'].str.strip()
     df['headline'] = df['headline'].str.lower()
 
     # Special Text Sequences
@@ -24,29 +25,31 @@ def load_data_and_clean():
     df['body'] = df['body'].str.replace(r'\bFILE\sPHOTO\:\s.+\n\(Reuters\)\s\-\s', '')
     df['body'] = df['body'].str.replace(r'\(Reuters\)\s\-\s', '')
     df['body'] = df['body'].str.replace(r'____', '')
-
+    df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
+    df['body'] = df['body'].str.replace(r'https?:(\/)?\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
+    df['body'] = df['body'].str.replace(r'www\.[A-z\-\.\/]+\.(com|org|net)', '')
     # Classic Cleaning
     df['body'] = df['body'].str.replace(r'\(.+\)', '')
-    df['body'] = df['body'].str.replace(r'\s+', ' ')
     df['body'] = df['body'].str.replace(r'\n', ' ')
-    df['body'] = df['body'].str.replace(r'\'', '’')
-    df['body'] = df['body'].str.replace(r'  ', '')
-    df['body'] = df['body'].str.replace(r'---', '')
-    df['body'] = df['body'].str.replace(r'\#', '')
-    df['body'] = df['body'].str.replace(r'http//wwwconservativedailynewscom', '')
-    df['body'] = df['body'].str.replace(r'\-', '')
-    df['body'] = df['body'].str.replace(r'wwwthedailysheeplecom', '')
-    df['body'] = df['body'].str.replace(r'https?:\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
-    df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
+    # Remove all alpha-numeric characters
+    df['body'] = df['body'].str.replace(r'\W+|\d+', ' ')
+    # Remove double spaces
+    df['body'] = df['body'].str.replace(r'\s+', ' ')
     df['body'] = df['body'].str.strip()
-    df['body'] = df['body'].str.replace(r'(\,|\;|\.|\:|-|\&|\?|\'s|“|”|’|‘|\!|…|\(|\)|\[|\]|\-|\-)', '')
-    df['body'] = df['body'].str.replace(r'\-', '')
-    df['body'] = df['body'].str.replace(r'\/', '')
-    df['body'] = df['body'].str.replace(r'\-', '')
     df['body'] = df['body'].str.lower()
 
-    df['source'] = df['urls'].str.extract(r'https?\:\/\/www\.([A-z\-]+)\.')
+
+    # Source
+    df['source_1'] = df['urls'].str.extract(r'https?\:\/\/[A-z]+\.([A-z\-]+)\.')
+    df['source_2'] = df['urls'].str.extract(r'https?\:\/\/([A-z\-]+)\.')
+    df['source'] = np.where(df['source_1'].notnull(), df['source_1'], df['source_2'])
+    del df['source_1'], df['source_2']
     df['source'] = df['source'].str.upper()
+
+    # Restrict Dict
+    df = df[(df['body'].notnull())&(df['body']!="")&(df['headline'].notnull())&(df['headline']!="")]
+    df = df.reset_index()
+    df.rename(columns={'index':'original_index'}, inplace=True)
 
     ## Export
     df_dict = df.to_dict()

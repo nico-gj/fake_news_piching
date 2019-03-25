@@ -10,6 +10,9 @@ class Param(object):
         self.data = load_data_and_clean()
         self.data_by_id = get_dico_by_id(self.data, 10)
         self.bodies = get_all_bodies(self.data_by_id)
+        self.labels = get_all_labels(self.data_by_id)
+        np.save("labels.npy", self.labels)
+        print("Labels saved")
         
         self.vocabulary_size = 3500
         self.user_size = len(self.bodies)

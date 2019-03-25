@@ -9,9 +9,6 @@ def load_data_and_clean():
 
     df = pd.read_csv('data/raw_kaggle_data/data.csv')
     df.columns = [col.lower() for col in list(df)]
-    # df.head()
-    # df.shape
-
 
     ## Data Cleaning Headline
     df['headline'] = df['headline'].str.replace(r'\(.+\)', '')
@@ -53,34 +50,32 @@ def load_data_and_clean():
 
     ## Export
     df_dict = df.to_dict()
-
-    ## Sandbox
-    # n=234
-    # print(df['body'][n])
-    # print('\n----------\n')
-    # print(df['body'][n])
+    
     return df_dict
 
 
+def get_dico_by_id(dico, body_threshold):
+    new_dict = {}
+    for i, id in enumerate(dico["headline"].keys()):
+        data_id = retrieve_specific_data_from_id(dico, id)
+        if len(data_id["body"])>body_threshold:
+            new_dict[i] = data_id
+    return new_dict
+
 def retrieve_specific_data_from_id(in_dict, id):
-    out_dict = {}
-    for key in in_dict.keys():
-        out_dict[key]=in_dict[key][id]
-    return out_dict
+    headline = in_dict['headline'][id].split(" ")
+    label = in_dict['label'][id]
+    if isinstance(in_dict["body"][id], float):
+        body = [""]
+    else:
+        body = in_dict["body"][id].split(" ")
+    return {'headline':headline, 'label':label, 'body':body}
 
 def get_all_headlines(data):
-    headlines = list()
-    return [elem[1].split(" ") for elem in sorted(data["headline"].items())]
+    return [data[keys]["headline"] for keys in data.keys()]
 
 def get_all_labels(data):
-    labels = list()
-    return [elem[1] for elem in sorted(data["label"].items())]
+    return [data[keys]["label"] for keys in data.keys()]
 
 def get_all_bodies(data):
-    bodies = list()
-    for elem in sorted(data["body"].items()):
-        if isinstance(elem[1], float):
-            bodies.append([""])
-        else:
-            bodies.append(elem[1].split(" "))
-    return bodies
+    return [data[keys]["body"] for keys in data.keys()]

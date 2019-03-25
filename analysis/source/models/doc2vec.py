@@ -1,6 +1,6 @@
 
 from models.doc2vec_utils import generate_batch_data
-import tensorflow as tf 
+import tensorflow as tf
 import numpy as np
 import os
 
@@ -9,11 +9,11 @@ def create_and_train_doc2vec_model(param):
     # Start a graph session
     sess = tf.Session()
     print('Creating Model')
-    
+
     # Define Embeddings:
     word_embeddings = tf.Variable(tf.random_uniform([param.vocabulary_size, param.word_embedding_size], -1.0, 1.0))
     doc_embeddings = tf.Variable(tf.random_uniform([param.user_size, param.doc_embedding_size], -1.0, 1.0))
-    
+
     # NCE loss parameters
     nce_weights = tf.Variable(tf.truncated_normal([param.vocabulary_size, param.word_embedding_size + param.doc_embedding_size], stddev=1.0 / np.sqrt(param.word_embedding_size + param.doc_embedding_size)))
     nce_biases = tf.Variable(tf.zeros([param.vocabulary_size]))
@@ -29,7 +29,7 @@ def create_and_train_doc2vec_model(param):
     embed_words = tf.nn.embedding_lookup(word_embeddings, word_inputs)
     embed_docs = tf.nn.embedding_lookup(doc_embeddings, doc_inputs)
     final_embed = tf.concat([embed_words, embed_docs], axis=-1)
-    
+
     # Get loss from prediction
     #loss = tf.reduce_mean(tf.nn.nce_loss(nce_weights, nce_biases, word_targets, final_embed, param.num_sampled, param.vocabulary_size))
     loss = tf.reduce_mean(tf.nn.sampled_softmax_loss(nce_weights, nce_biases, word_targets, final_embed, param.num_sampled, param.vocabulary_size))

@@ -50,9 +50,9 @@ def load_data_and_clean():
 
     ## Export
     df_dict = df.to_dict()
-    
-    return df_dict
+    df_dict = get_dico_by_id(df_dict, 10)
 
+    return df_dict
 
 def get_dico_by_id(dico, body_threshold):
     new_dict = {}

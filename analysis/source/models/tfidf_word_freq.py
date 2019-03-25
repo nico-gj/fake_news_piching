@@ -19,7 +19,7 @@ from nltk import SnowballStemmer
 
 from collections import Counter, OrderedDict
 
-from read_in_and_cleaning import load_data_and_clean
+from read_in_and_cleaning import load_data_and_clean, get_all_var
 
 def create_bag_of_words(corpus, ngram_range = (1, 1), stop_words = None, stem = False, min_df = 0.05, max_df = 0.95, use_idf = False):
 
@@ -80,9 +80,8 @@ def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words = None, stem=Tru
 
     ## Data Import
     df_dict = load_data_and_clean()
-
-    ## Define dictionnary
     corpus = np.array(list(df_dict['{}'.format(text)].values()))
+    print(len(corpus))
 
     # Create TFIDF Features:
     corpus_tfidf, corpus_features = create_bag_of_words(corpus, stop_words=stop_words, min_df=min_df, max_df=max_df, stem=stem, ngram_range=ngram_range, use_idf=use_idf)
@@ -93,5 +92,3 @@ def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words = None, stem=Tru
 
     with open('data/tfidf_word_freq_data/tfidf_word_freq_data_{}.npy'.format(text), 'wb') as np_file:
         np.save(np_file, df)
-
-    return

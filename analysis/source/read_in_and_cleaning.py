@@ -4,7 +4,7 @@ import pandas as pd
 import math
 from tqdm import tqdm
 
-def load_data_and_clean():
+def load_data_and_clean(body_threshold=10):
     ## Data Read In
 
     df = pd.read_csv('data/raw_kaggle_data/data.csv')
@@ -45,21 +45,20 @@ def load_data_and_clean():
 
     # Restrict Dict
     df = df[(df['body'].notnull())&(df['body']!="")&(df['headline'].notnull())&(df['headline']!="")]
+    df = df[df['body'].str.split(' ').apply(lambda x: len(x)>body_threshold)]
     df = df.reset_index()
     df.rename(columns={'index':'original_index'}, inplace=True)
 
     ## Export
     df_dict = df.to_dict()
-    df_dict = get_dico_by_id(df_dict, 10)
 
     return df_dict
 
-def get_dico_by_id(dico, body_threshold):
+def get_dico_by_id(dico):
     new_dict = {}
     for i, id in enumerate(dico["headline"].keys()):
         data_id = retrieve_specific_data_from_id(dico, id)
-        if len(data_id["body"])>body_threshold:
-            new_dict[i] = data_id
+        new_dict[i] = data_id
     return new_dict
 
 def retrieve_specific_data_from_id(in_dict, id):
@@ -79,3 +78,6 @@ def get_all_labels(data):
 
 def get_all_bodies(data):
     return [data[keys]["body"] for keys in data.keys()]
+
+def get_all_var(data, var):
+    return [data[keys][var] for keys in data.keys()]

@@ -33,12 +33,7 @@ def create_bag_of_words(corpus, ngram_range = (1, 1), stop_words = None, stem = 
         stop_words = [tokenize(x)[0] for x in stop_words]
     else:
         tokenize = None
-    vectorizer = CountVectorizer(analyzer=ANALYZER,
-                                 tokenizer=tokenize,
-                                 ngram_range=ngram_range,
-                                 stop_words = stop_words,
-                                 strip_accents=STRIP_ACCENTS,
-                                 min_df = min_df, max_df = max_df)
+    vectorizer = CountVectorizer(analyzer=ANALYZER, tokenizer=tokenize, ngram_range=ngram_range, stop_words = stop_words, strip_accents=STRIP_ACCENTS, min_df = min_df, max_df = max_df)
 
     bag_of_words = vectorizer.fit_transform(corpus)
     features = vectorizer.get_feature_names()
@@ -69,7 +64,7 @@ def get_word_counts(bag_of_words, feature_names):
     np_word_count = np.asarray(word_count).ravel()
 
     # create dict of words mapped to count of occurrences of each word.
-    dict_word_counts = dict( zip(feature_names, np_word_count) )
+    dict_word_counts = dict(zip(feature_names, np_word_count))
 
     # Create ordered dictionary
     orddict_word_counts = OrderedDict( sorted(dict_word_counts.items(), key=lambda x: x[1], reverse=True), )
@@ -81,14 +76,12 @@ def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words = None, stem=Tru
     ## Data Import
     df_dict = load_data_and_clean()
     corpus = np.array(list(df_dict['{}'.format(text)].values()))
-    print(len(corpus))
 
     # Create TFIDF Features:
     corpus_tfidf, corpus_features = create_bag_of_words(corpus, stop_words=stop_words, min_df=min_df, max_df=max_df, stem=stem, ngram_range=ngram_range, use_idf=use_idf)
 
     df = pd.DataFrame(corpus_tfidf.toarray())
     df.columns = corpus_features
-    # df = df.as_matrix()
 
-    with open('data/tfidf_word_freq_data/tfidf_word_freq_data_{}.npy'.format(text), 'wb') as np_file:
+    with open('data/tfidf_word_freq_data/tfidf_word_freq_{}.npy'.format(text), 'wb') as np_file:
         np.save(np_file, df)

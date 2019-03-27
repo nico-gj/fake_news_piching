@@ -83,5 +83,5 @@ def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words = None, stem=Tru
     df = pd.DataFrame(corpus_tfidf.toarray())
     df.columns = corpus_features
 
-    with open('data/tfidf_word_freq_data/tfidf_word_freq_{}.npy'.format(text), 'wb') as np_file:
+    with open('data/tfidf_word_freq_{}.npy'.format(text), 'wb') as np_file:
         np.save(np_file, df)

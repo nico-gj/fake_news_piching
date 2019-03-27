@@ -6,3 +6,7 @@
 
 # Jupyter notebook
 *.ipynb_checkpoints
+
+# Folders:
+data/
+*_archives/

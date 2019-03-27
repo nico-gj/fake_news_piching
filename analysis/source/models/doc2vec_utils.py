@@ -24,6 +24,7 @@ def plot_counter(counter, name):
 
 
 def from_counter_occurences_to_counter_frequencies(counter):
+    counter_occurences = Counter(list(counter.values()))
     number_of_words = sum(list(counter_occurences.values()))
     counter_frequencies = Counter()
     for key in counter.keys():
@@ -66,12 +67,6 @@ def generate_batch_data(param):
         batch = param.triplets[param.index:]
         param.index = 0
         return batch
-
-
-#counter = get_frequency_of_words(headlines)
-#counter_occurences = Counter(list(counter.values()))
-#counter_frequencies = from_counter_occurences_to_counter_frequencies(counter_occurences)
-#plot_counter(counter_frequencies, "headline_frequencies")
 
 #counter_occurences = Counter(list(counter.values()))
 #counter_frequencies = from_counter_occurences_to_counter_frequencies(counter_occurences)

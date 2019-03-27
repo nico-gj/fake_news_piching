@@ -142,12 +142,12 @@ def load_data_and_clean(body_threshold=10, data='proquest'):
 
         # Restrict Data by Removing Empty
         for var in list(df):
-            df = df[(df[var].notnull())&(df[var]!="")]
+            df = df[(df[var].notnull())]
         df = df[df['body'].str.split(' ').apply(lambda x: len(x)>body_threshold)]
         df = df.drop_duplicates('body')
 
         # Restrict to news really about Kanye West
-        n = 5   # How many times does he have to be mentionned?
+        n = 1   # How many times does he have to be mentionned?
         df = df[df['body'].apply(lambda x: len(re.findall(r'\b(kanye\swest|kanye|west|ye|yeezy)\b', x)))>n]
 
 
@@ -176,18 +176,18 @@ def print_data_by_id(df_dict, i):
 
 def retrieve_specific_data_from_id(in_dict, id):
     headline = in_dict['headline'][id].split(" ")
-    label = in_dict['label'][id]
-    if isinstance(in_dict["body"][id], float):
-        body = [""]
-    else:
-        body = in_dict["body"][id].split(" ")
-    return {'headline':headline, 'label':label, 'body':body}
+    body = in_dict["body"][id].split(" ")
+    source = in_dict["source"][id]
+    return {'headline':headline, 'source':source, 'body':body}
 
 def get_all_headlines(data):
     return [data[keys]["headline"] for keys in data.keys()]
 
 def get_all_labels(data):
     return [data[keys]["label"] for keys in data.keys()]
+
+def get_all_source(data):
+    return [data[keys]["source"] for keys in data.keys()]
 
 def get_all_bodies(data):
     return [data[keys]["body"] for keys in data.keys()]

@@ -4,7 +4,7 @@ from read_in_and_cleaning import load_data_and_clean, get_all_labels, get_all_he
 
 # There are n columns in the feature matrix 
 # after One Hot Encoding. 
-data = np.load("data/body_embeddings_30000.npy")
+data = np.load("data/tfidf_word_freq_body.npy")
 print("Number features", data.shape[1])
 
 raw_data = load_data_and_clean()

@@ -71,7 +71,7 @@ def get_word_counts(bag_of_words, feature_names):
 
     return orddict_word_counts
 
-def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words = None, stem=True, ngram_range=(1,2), use_idf=True):
+def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words=None, stem=True, ngram_range=(1,2), use_idf=True):
 
     ## Data Import
     df_dict = load_data_and_clean()
@@ -82,6 +82,8 @@ def tf_idf_word_freq(text, min_df=0.05, max_df=0.95, stop_words = None, stem=Tru
 
     df = pd.DataFrame(corpus_tfidf.toarray())
     df.columns = corpus_features
+
+    print("{}: {} features".format(text, df.shape[1]))
 
     with open('data/tfidf_word_freq_{}.npy'.format(text), 'wb') as np_file:
         np.save(np_file, df)

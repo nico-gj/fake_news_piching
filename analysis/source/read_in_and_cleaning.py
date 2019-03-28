@@ -100,14 +100,29 @@ def load_data_and_clean(body_threshold=10, data='proquest'):
         df['headline'] = df['headline'].str.strip()
         df['headline'] = df['headline'].str.lower()
 
+        df['body_raw'] = df['body']
+
         ## Data Cleaning Body
         # Special Text Sequences
-        df['body'] = df['body'].str.replace(r'____', '')
-        df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
-        df['body'] = df['body'].str.replace(r'https?:(\/)?\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
-        df['body'] = df['body'].str.replace(r'www\.[A-z\-\.\/]+\.(com|org|net)', '')
+        df['body'] = df['body'].str.replace(r'\n----------\n(\n|.)+$', '')
+        df['body'] = df['body'].str.replace(r'\n(Credit|CREDIT)\:[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\nIllustration\sCaption\:[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\nIllustration\sTangled\sweb:[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\n[^\n]+can\sbe\sreached\sat\s[^\n\@]+\@[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\nThis\sis\sa\smore\scomplete\sversion\sof\sthe\sstory\sthan\sthe\sone\sthat\sappeared\sin\sprint\.(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\nPhotograph\sFrom\s((Far|Top)\s)?(Above|Left|Right|Below|(t|T)op)[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\nThis\slist\swas\scompiled\swith the\sassistance\sof[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\nAll\sdates\sare\ssubject\sto change\.(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\n[^\n]+IS\sA\s[^\n]+\sSPECIAL\sCONTRIBUTOR\.\s[^\n]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\n[a-z\.]+@[a-z\.]+(\n|$)', '\n')
+        df['body'] = df['body'].str.replace(r'\n--?\s[^\n]+$', '')
+
+        # df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
+        # df['body'] = df['body'].str.replace(r'https?:(\/)?\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
+        # df['body'] = df['body'].str.replace(r'www\.[A-z\-\.\/]+\.(com|org|net)', '')
+
         # Classic Cleaning
-        df['body'] = df['body'].str.replace(r'\(.+\)', '')
+        df['body'] = df['body'].str.replace(r'\([^\)]+\)', '')
         df['body'] = df['body'].str.replace(r'\n', ' ')
         # Remove all alpha-numeric characters
         df['body'] = df['body'].str.replace(r'\W+|\d+', ' ')
@@ -154,6 +169,8 @@ def load_data_and_clean(body_threshold=10, data='proquest'):
         # Save Original Index Column
         df = df.reset_index()
         df.rename(columns={'index':'original_index'}, inplace=True)
+
+        df.to_csv('data/temp.csv')
 
 
     ## Export

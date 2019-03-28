@@ -74,7 +74,6 @@ def load_data_and_clean(body_threshold=10, data='proquest'):
         df['body'] = df['body'].str.strip()
         df['body'] = df['body'].str.lower()
 
-
         # Source
         df['source_1'] = df['urls'].str.extract(r'https?\:\/\/[A-z]+\.([A-z\-]+)\.')
         df['source_2'] = df['urls'].str.extract(r'https?\:\/\/([A-z\-]+)\.')
@@ -117,11 +116,9 @@ def load_data_and_clean(body_threshold=10, data='proquest'):
         df['body'] = df['body'].str.replace(r'\n[a-z\.]+@[a-z\.]+(\n|$)', '\n')
         df['body'] = df['body'].str.replace(r'\n--?\s[^\n]+$', '')
 
-        # df['body'] = df['body'].str.replace(r'\d{4}\/\d{2}\/[A-z]+', '')
-        # df['body'] = df['body'].str.replace(r'https?:(\/)?\/[A-z\-\.\/]+\/([A-z\-\.\/]+)?', '')
-        # df['body'] = df['body'].str.replace(r'www\.[A-z\-\.\/]+\.(com|org|net)', '')
-
         # Classic Cleaning
+        df['body'] = df['body'].str.replace(r'[A-z\.\-]+\@[A-z\.\-]+', '') # Email address
+        df['body'] = df['body'].str.replace(r'\@[A-z\-\_]+', '') # Twitter handle
         df['body'] = df['body'].str.replace(r'\([^\)]+\)', '')
         df['body'] = df['body'].str.replace(r'\n', ' ')
         # Remove all alpha-numeric characters
@@ -162,16 +159,13 @@ def load_data_and_clean(body_threshold=10, data='proquest'):
         df = df.drop_duplicates('body')
 
         # Restrict to news really about Kanye West
-        n = 1   # How many times does he have to be mentionned?
-        df = df[df['body'].apply(lambda x: len(re.findall(r'\b(kanye\swest|kanye|west|ye|yeezy)\b', x)))>n]
+        n = 2   # How many times does he have to be mentionned?
+        df = df[df['body'].apply(lambda x: len(re.findall(r'\b(kanye\swest|kanye|west|ye|yeezy)\b', x)))>=n]
 
 
         # Save Original Index Column
         df = df.reset_index()
         df.rename(columns={'index':'original_index'}, inplace=True)
-
-        df.to_csv('data/temp.csv')
-
 
     ## Export
     df_dict = df.to_dict()

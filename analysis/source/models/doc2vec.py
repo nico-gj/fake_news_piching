@@ -1,11 +1,10 @@
-
 from models.doc2vec_utils import generate_batch_data
 import tensorflow as tf
 import numpy as np
 import os
 
-
 def create_and_train_doc2vec_model(param):
+
     # Start a graph session
     sess = tf.Session()
     print('Creating Model')
@@ -83,4 +82,4 @@ def create_and_train_doc2vec_model(param):
 
         # Save dictionary + embeddings
         if (i + 1) % param.save_embeddings_every == 0:
-            np.save("doc_embeddings.npy", sess.run(doc_embeddings))
+            np.save("data/doc2vec_{}.npy".format(param.text_var), sess.run(doc_embeddings))

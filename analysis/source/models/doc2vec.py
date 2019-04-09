@@ -30,7 +30,7 @@ def create_and_train_doc2vec_model(param):
     final_embed = tf.concat([embed_words, embed_docs], axis=-1)
 
     # Get loss from prediction
-    #loss = tf.reduce_mean(tf.nn.nce_loss(nce_weights, nce_biases, word_targets, final_embed, param.num_sampled, param.vocabulary_size))
+    # loss = tf.reduce_mean(tf.nn.nce_loss(nce_weights, nce_biases, word_targets, final_embed, param.num_sampled, param.vocabulary_size))
     loss = tf.reduce_mean(tf.nn.sampled_softmax_loss(nce_weights, nce_biases, word_targets, final_embed, param.num_sampled, param.vocabulary_size))
 
     # Create optimizer
@@ -56,7 +56,7 @@ def create_and_train_doc2vec_model(param):
     for i in range(param.training_steps):
         batch = generate_batch_data(param)
         word_i, doc_i, word_t = batch[:,0], batch[:,1], np.reshape(batch[:,2], (-1,1))
-        feed_dict = {word_inputs: word_i, doc_inputs : doc_i, word_targets: word_t}
+        feed_dict = {word_inputs: word_i, doc_inputs: doc_i, word_targets: word_t}
 
         # Run the train step
         _, loss_val = sess.run([train_step, loss], feed_dict=feed_dict)
@@ -65,7 +65,7 @@ def create_and_train_doc2vec_model(param):
         # Return the loss
         if (i + 1) % param.print_loss_every == 0:
             loss_val = sess.run(loss, feed_dict=feed_dict)
-            print('50 last losses at step {} : {}'.format(i + 1, sum(loss_vec[-50:])/50))
+            print('50 last losses at step {}: {}'.format(i + 1, sum(loss_vec[-50:])/50))
 
         # Validation: Print some random words and top 5 related words
         if (i + 1) % param.print_valid_every == 0:

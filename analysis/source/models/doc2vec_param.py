@@ -12,7 +12,7 @@ class Param(object):
         self.text = retrieve_word_seq_text(self.data, self.text_var)
 
         counter = get_frequency_of_words(self.text)
-        print("Number of different words", len(counter))
+        print("Number of different words:", len(counter))
         #counter_frequencies = from_counter_occurences_to_counter_frequencies(counter)
         #plot_counter(counter_frequencies, "headline_frequencies")
 
@@ -24,7 +24,7 @@ class Param(object):
         np.random.shuffle(self.triplets)
 
         print("Parameters")
-        print("Vocab_size", self.vocabulary_size, "User_size", self.user_size, "Number of pairs", len(self.triplets))
+        print("Vocab_size:", self.vocabulary_size, "\nUser_size:", self.user_size, "\nNumber of pairs:", len(self.triplets))
         self.number_of_training_pairs = len(self.triplets)
         self.valid_ids = np.array([10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000])
 

@@ -48,7 +48,7 @@ def create_dataset(param, lists):
     triplets = list()
     for k, elem in enumerate(lists):
         for i in range(len(elem)-(1+param.window_size)):
-            for elem1, elem2 in combinations(elem[i:i+(1 + param.window_size)], 2):
+            for elem1, elem2 in combinations(elem[i:i+(1+param.window_size)], 2):
                 triplets.append([dictionnary_word_to_id[elem1], k, dictionnary_word_to_id[elem2]])
 
     dictionnary_id_to_word = {v: k for k, v in dictionnary_word_to_id.items()}
@@ -57,14 +57,21 @@ def create_dataset(param, lists):
 
 
 def generate_batch_data(param):
-    if (param.index + param.batch_size < param.number_of_training_pairs):
+
+    # if (param.index + param.batch_size < param.number_of_training_pairs):
+    #     batch = param.triplets[param.index : param.index + param.batch_size]
+    #     param.index += param.batch_size
+    # else:
+    #     batch = param.triplets[param.index:]
+    #     param.index = 0
+
+    if (param.index + param.batch_size <= param.number_of_training_pairs):
         batch = param.triplets[param.index : param.index + param.batch_size]
-        param.index += param.batch_size
-        return batch
     else:
-        batch = param.triplets[param.index:]
-        param.index = 0
-        return batch
+        batch = param.triplets[param.index:] + param.triplets[:param.batch_size-(param.number_of_training_pairs-param.index)]
+
+    param.index = (param.index+param.batch_size)%param.number_of_training_pairs
+    return batch
 
 #counter_occurences = Counter(list(counter.values()))
 #counter_frequencies = from_counter_occurences_to_counter_frequencies(counter_occurences)

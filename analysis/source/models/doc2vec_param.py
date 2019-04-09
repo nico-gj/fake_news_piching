@@ -1,5 +1,5 @@
 import numpy as np
-from read_in_and_cleaning import load_data_and_clean, retrieve_word_seq_text
+from read_in_and_cleaning import read_in_and_clean, retrieve_word_seq_text
 from models.doc2vec_utils import create_dataset, get_frequency_of_words, from_counter_occurences_to_counter_frequencies, plot_counter
 
 class Param(object):
@@ -8,7 +8,7 @@ class Param(object):
 
         self.text_var = 'body'
 
-        self.data = load_data_and_clean()
+        self.data = read_in_and_clean()
         self.text = retrieve_word_seq_text(self.data, self.text_var)
 
         counter = get_frequency_of_words(self.text)

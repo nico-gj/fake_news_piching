@@ -19,7 +19,7 @@ from nltk import SnowballStemmer
 
 from collections import Counter, OrderedDict
 
-from read_in_and_cleaning import load_data_and_clean
+from read_in_and_cleaning import read_in_and_clean
 
 def create_bag_of_words(corpus, ngram_range = (1, 1), stop_words = None, stem = False, min_df = 0.05, max_df = 0.95, use_idf = False):
 
@@ -74,7 +74,7 @@ def get_word_counts(bag_of_words, feature_names):
 def tf_idf(text, min_df=0.05, max_df=0.95, stop_words=None, stem=True, ngram_range=(1,2), use_idf=True):
 
     ## Data Import
-    df_dict = load_data_and_clean()
+    df_dict = read_in_and_clean()
     corpus = np.array(list(df_dict['{}'.format(text)].values()))
 
     # Create TFIDF Features:

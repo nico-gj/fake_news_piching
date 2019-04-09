@@ -18,7 +18,7 @@ def classic_var_cleaning(df, var):
     df[var] = df[var].str.lower()
     return df[var]
 
-def load_data_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='george_mcintyre', extra_path=""):
+def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='george_mcintyre', extra_path=""):
 
     if data == 'kaggle':
 
@@ -64,7 +64,7 @@ def load_data_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='g
         df['headline_raw'] = df['headline']
 
         ## Convert label to binary
-        df['label'] = (df['label']=="FAKE")
+        df['label'] = [1 if x=="FAKE" else 0 for x in df['label']]
 
         ## Source
         df['source'] = "Unknown"

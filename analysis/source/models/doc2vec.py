@@ -83,4 +83,4 @@ def create_and_train_doc2vec_model(param):
         # Save dictionary + embeddings
         if (i + 1) % param.save_embeddings_every == 0:
             np.save("data/doc2vec_{}.npy".format(param.text_var), sess.run(doc_embeddings))
-            numpy.savetxt("data/doc2vec_{}.csv".format(param.text_var), sess.run(doc_embeddings), delimiter=",")
+            np.savetxt("data/doc2vec_{}.csv".format(param.text_var), sess.run(doc_embeddings), delimiter=",")

@@ -87,4 +87,4 @@ def tf_idf(text, min_df=0.05, max_df=0.95, stop_words=None, stem=True, ngram_ran
 
     with open('data/tfidf_{}.npy'.format(text), 'wb') as np_file:
         np.save(np_file, df)
-    df.to_csv('tfidf_{}.csv'.format(text), index=False)
+    df.to_csv('data/tfidf_{}.csv'.format(text), index=False)

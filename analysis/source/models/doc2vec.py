@@ -86,4 +86,3 @@ def create_and_train_doc2vec_model(param):
             np.save("data/doc2vec_{}.npy".format(param.text_var), sess.run(doc_embeddings))
             df = pd.DataFrame(sess.run(doc_embeddings))
             df.to_csv("data/doc2vec_{}.csv".format(param.text_var), index=False)
-            # np.savetxt("data/doc2vec_{}.csv".format(param.text_var), sess.run(doc_embeddings), delimiter=",")

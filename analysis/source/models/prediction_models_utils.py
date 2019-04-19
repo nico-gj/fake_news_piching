@@ -165,9 +165,6 @@ def get_tree(model, variables, sep = "-    "):
 
 def get_coef_table(param, model):
 
-    coef_table = None
-    p_vals_present = False
-
     variables = param.training_matrix['variables']
     coefs = model.coef_[0]
 
@@ -195,7 +192,6 @@ def get_coef_table(param, model):
         'p_values': result.pvalues,
         'significance': significance
     })
-
     print(coef_table[coef_table['significance']=="***"])
 
     return coef_table
@@ -220,10 +216,10 @@ def evaluate_model(param, model):
     eval_score_training = eval_func(param.training_matrix['y'], training_scored)
     print("Score Training Set: {}".format(eval_score_training))
 
+    results_dict = {}
 
     if param.test_perc == 0:
         print("No test data to perform evaluation on.")
-        results_dict = {}
 
     else:
         if param.binary_data:
@@ -237,7 +233,6 @@ def evaluate_model(param, model):
         print("\nConfusion Matrix:")
         if param.binary_data==False:
             print("Not binary data: Confusion Matrix could not be calculated.")
-            test_conf_matrix=None
         else:
             test_expected = param.test_matrix['y']
             test_predicted = [1 if x > param.threshold else 0 for x in test_scored]
@@ -247,39 +242,25 @@ def evaluate_model(param, model):
             print("Precision: {}".format(precision_score(test_expected, test_predicted)))
             print("Recall: {}".format(recall_score(test_expected, test_predicted)))
 
+            evaluation_df = pd.DataFrame({
+                'true_outcome': test_expected,
+                'predicted_score': test_scored,
+                'predicted_outcome': test_predicted
+            })
+            results_dict['evaluation_df'] = evaluation_df
+
         print("\nROC Curve:")
         if param.binary_data==False:
             print("Not binary data: ROC Curve could not be calculated.")
-            fpr, tpr, thresholds = None, None, None
         if param.binary_data:
             print("ROC Curve data exported.")
             # Prepare an ROC curve
             fpr, tpr, thresholds = roc_curve(test_expected, test_scored)
-
-        evaluation_df = pd.DataFrame({
-            'true_outcome': param.test_matrix['y'],
-            'predicted_score': test_scored,
-            'predicted_outcome': test_predicted
-        })
-
-        results_dict = {
-            'evaluation_df': evaluation_df,
-            'fpr':fpr,
-            'tpr':tpr,
-            'thresholds':thresholds
-        }
+            roc_df = pd.DataFrame({
+                'thresholds':thresholds,
+                'fpr':fpr,
+                'tpr':tpr
+            })
+            results_dict['roc_df'] = roc_df
 
     return results_dict
-
-def plot_roc(param, results_dict, model_name, title):
-    if param.test_perc == 0:
-        print("No test data to plot ROC Curve on.")
-    else:
-        roc_c = plt.figure()
-        plt.plot(results_dict['fpr'], results_dict['tpr'])
-        plt.plot([0, 1], [0, 1], linestyle = '--')
-        plt.xlabel('False Positive Rate', fontsize = 18)
-        plt.ylabel('True Positive Rate', fontsize = 18)
-        plt.title(title, fontsize = 18)
-        sns.despine()
-        plt.savefig('output/roc_{}_{}_{}.png'.format(model_name, param.features, param.text), bbox_inches='tight')

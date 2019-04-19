@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
+
 def get_frequency_of_words(lists):
     counter = Counter()
     for elem in tqdm(lists):
@@ -58,17 +59,10 @@ def create_dataset(param, lists):
 
 def generate_batch_data(param):
 
-    # if (param.index + param.batch_size < param.number_of_training_pairs):
-    #     batch = param.triplets[param.index : param.index + param.batch_size]
-    #     param.index += param.batch_size
-    # else:
-    #     batch = param.triplets[param.index:]
-    #     param.index = 0
-
     if (param.index + param.batch_size <= param.number_of_training_pairs):
         batch = param.triplets[param.index : param.index + param.batch_size]
     else:
-        batch = param.triplets[param.index:] + param.triplets[:param.batch_size-(param.number_of_training_pairs-param.index)]
+        batch = np.concatenate((param.triplets[param.index:], param.triplets[:param.batch_size-(param.number_of_training_pairs-param.index)]), axis=0)
 
     param.index = (param.index+param.batch_size)%param.number_of_training_pairs
     return batch

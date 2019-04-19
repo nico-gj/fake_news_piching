@@ -5,13 +5,13 @@ from read_in_and_cleaning import read_in_and_clean
 
 class Param(object):
 
-    def __init__(self):
+    def __init__(self, features, text_var, test_perc=0.3):
 
-        self.features = "tfidf"
-        self.text = "body"
+        self.features = features
+        self.text_var = text_var
 
         self.df_dict = read_in_and_clean()
-        self.data = pd.read_csv("data/{}_{}.csv".format(self.features, self.text))
+        self.data = pd.read_csv("data/{}_{}.csv".format(self.features, self.text_var))
         print("\n{} observations and {} variables.".format(self.data.shape[0], self.data.shape[1]))
         self.data['label'] = list(self.df_dict['label'].values())
 
@@ -26,7 +26,7 @@ class Param(object):
         self.n_estimators = 5
         self.learning_rate = 0.05
 
-        self.test_perc = 0.3
+        self.test_perc = test_perc
         self.training_data, self.test_data = split_data(self)
 
         self.prediction_data = None

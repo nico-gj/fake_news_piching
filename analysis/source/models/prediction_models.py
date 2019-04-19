@@ -15,7 +15,7 @@ from sklearn import model_selection as sk_ms
 from sklearn.metrics import r2_score, roc_auc_score, roc_curve
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.ensemble import GradientBoostingClassifier, GradientBoostingRegressor
-from models.prediction_models_utils import get_tree, evaluate_model, plot_roc, get_coef_table
+from models.prediction_models_utils import get_tree, evaluate_model, get_coef_table
 
 
 def logistic_regression(param):
@@ -38,9 +38,12 @@ def logistic_regression(param):
     model = model.fit(param.training_matrix['X'], param.training_matrix['y'])
 
     results_dict = evaluate_model(param=param, model=model)
-    coef_table = get_coef_table(param, model)
 
-    plot_roc(param=param, results_dict=results_dict, model_name='logreg', title = "Logistic Regression ROC Curve")
+    # Add Coef Table
+    coef_table = get_coef_table(param, model)
+    results_dict['coef_table'] = coef_table
+
+    results_dict['model_name'] = "logreg"
 
     return results_dict
 
@@ -59,9 +62,12 @@ def decision_tree(param):
     model = model.fit(param.training_matrix['X'], param.training_matrix['y'])
 
     results_dict = evaluate_model(param=param, model=model)
-    tree = get_tree(model=model, variables=param.training_matrix['variables'])
 
-    plot_roc(param=param, results_dict=results_dict, model_name='dectree', title = "Decision Tree Regression ROC Curve")
+    # Add Decision Tree
+    tree = get_tree(model=model, variables=param.training_matrix['variables'])
+    results_dict['tree'] = tree
+
+    results_dict['model_name'] = "dectree"
 
     return results_dict
 
@@ -82,9 +88,9 @@ def boosted_decision_tree(param):
 
     results_dict = evaluate_model(param=param, model=model)
 
-    plot_roc(param=param, results_dict=results_dict, model_name='boosteddectree', title = "Boosted Decision Tree Regression ROC Curve")
+    results_dict['model_name'] = "boostedtree"
 
-    return
+    return results_dict
 
 
 def random_forest(param):
@@ -104,6 +110,6 @@ def random_forest(param):
 
     results_dict = evaluate_model(param=param, model=model)
 
-    plot_roc(param=param, results_dict=results_dict, model_name='randomforest', title = "Random Forest Regression ROC Curve")
+    results_dict['model_name'] = "randomforest"
 
-    return
+    return results_dict

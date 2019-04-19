@@ -4,9 +4,9 @@ from models.doc2vec_utils import create_dataset, get_frequency_of_words, from_co
 
 class Param(object):
 
-    def __init__(self):
+    def __init__(self, text_var):
 
-        self.text_var = 'body'
+        self.text_var = text_var
 
         self.data = read_in_and_clean()
         self.text = retrieve_word_seq_text(self.data, self.text_var)
@@ -16,15 +16,15 @@ class Param(object):
         #counter_frequencies = from_counter_occurences_to_counter_frequencies(counter)
         #plot_counter(counter_frequencies, "headline_frequencies")
 
-        self.vocabulary_size = 10000
-        self.user_size = len(self.text)
         self.remove_top_n_words = 50
+        self.vocabulary_size = min(10000, len(counter)-self.remove_top_n_words)
+        self.user_size = len(self.text)
         self.window_size = 3
         self.lists, self.dictionnary_word_to_id, self.dictionnary_id_to_word, self.triplets = create_dataset(self, self.text)
         np.random.shuffle(self.triplets)
 
         print("Parameters")
-        print("Vocab_size:", self.vocabulary_size, "\nUser_size:", self.user_size, "\nNumber of pairs:", len(self.triplets))
+        print("Vocab Size:", self.vocabulary_size, "\nNumber of Texts:", self.user_size, "\nNumber of Pairs:", len(self.triplets))
         self.number_of_training_pairs = len(self.triplets)
         self.valid_ids = np.array([10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000])
 
@@ -38,3 +38,5 @@ class Param(object):
         self.save_embeddings_every = 2500
         self.word_embedding_size = 150
         self.doc_embedding_size = 150
+
+        self.seed = 123

@@ -2,6 +2,7 @@ from models.doc2vec_utils import generate_batch_data
 import tensorflow as tf
 import numpy as np
 import os
+import pandas as pd
 
 def create_and_train_doc2vec_model(param):
 
@@ -83,4 +84,6 @@ def create_and_train_doc2vec_model(param):
         # Save dictionary + embeddings
         if (i + 1) % param.save_embeddings_every == 0:
             np.save("data/doc2vec_{}.npy".format(param.text_var), sess.run(doc_embeddings))
-            np.savetxt("data/doc2vec_{}.csv".format(param.text_var), sess.run(doc_embeddings), delimiter=",")
+            df = pd.DataFrame(sess.run(doc_embeddings))
+            df.to_csv("data/doc2vec_{}.csv".format(param.text_var), index=False)
+            # np.savetxt("data/doc2vec_{}.csv".format(param.text_var), sess.run(doc_embeddings), delimiter=",")

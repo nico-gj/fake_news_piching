@@ -79,7 +79,7 @@ print("{} observations for analysis".format(len(df_dict[list(df_dict.keys())[0]]
 pca_body_tfidf = pca_and_plot(df_dict=df_dict, text='body', features='tfidf', hue_vars=['label'])
 pca_headline_tfidf = pca_and_plot(df_dict=df_dict, text='headline', features='tfidf', hue_vars=['label'])
 pca_body_doc2vec = pca_and_plot(df_dict=df_dict, text='body', features='doc2vec', hue_vars=['label'])
-# pca_headline_doc2vec = pca_and_plot(df_dict=df_dict, text='headline', features='doc2vec', hue_vars=['label'])
+pca_headline_doc2vec = pca_and_plot(df_dict=df_dict, text='headline', features='doc2vec', hue_vars=['label'])
 
 ##################################################
 # K-Means on PCA

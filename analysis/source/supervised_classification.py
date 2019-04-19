@@ -1,18 +1,75 @@
-import tensorflow as tf
-import numpy as np
-from read_in_and_cleaning import read_in_and_clean
+import matplotlib.pyplot as plt
+import seaborn as sns
 from models.prediction_models import logistic_regression, decision_tree, boosted_decision_tree, random_forest
 from models.prediction_models_param import Param
+
+def plot_roc_curve(roc_df, param, roc_curve_title):
+    roc_c = plt.figure()
+    plt.plot(roc_df['fpr'], roc_df['tpr'])
+    plt.plot([0, 1], [0, 1], linestyle = '--')
+    plt.xlabel('False Positive Rate', fontsize = 18)
+    plt.ylabel('True Positive Rate', fontsize = 18)
+    plt.title(roc_curve_title, fontsize = 18)
+    sns.despine()
+    plt.savefig('output/model_{}_roc_{}_{}.png'.format(results['model_name'], param.features, param.text_var), bbox_inches='tight')
+
+def export_results(results, param, roc_curve_title=""):
+    if 'coef_table' in results.keys():
+        coef_table = results['coef_table']
+        coef_table.to_csv('output/model_{}_coefs_{}_{}.csv'.format(results['model_name'], param.features, param.text_var), index=False)
+    if 'tree' in results.keys():
+        tree = results['tree']
+        tree = '\n'.join(tree)
+        file = open('output/model_{}_tree_{}_{}.txt'.format(results['model_name'], param.features, param.text_var), 'w+')
+        file.write(tree)
+        file.close()
+    if 'roc_df' in results.keys():
+        roc_df = results['roc_df']
+        plot_roc_curve(roc_df, param, roc_curve_title)
 
 #############
 # Runs
 #############
 
-param = Param()
-logistic_regression(param)
-decision_tree(param)
-boosted_decision_tree(param)
-random_forest(param)
+param = Param(features='tfidf', text_var='body')
+results = logistic_regression(param)
+export_results(results, param, roc_curve_title="Decision Tree Regression ROC Curve")
+results = decision_tree(param)
+export_results(results, param)
+results = boosted_decision_tree(param)
+export_results(results, param)
+results = random_forest(param)
+export_results(results, param)
+
+param = Param(features='tfidf', text_var='headline')
+results = logistic_regression(param)
+export_results(results, param)
+results = decision_tree(param)
+export_results(results, param)
+results = boosted_decision_tree(param)
+export_results(results, param)
+results = random_forest(param)
+export_results(results, param)
+
+param = Param(features='doc2vec', text_var='body')
+results = logistic_regression(param)
+export_results(results, param)
+results = decision_tree(param)
+export_results(results, param)
+results = boosted_decision_tree(param)
+export_results(results, param)
+results = random_forest(param)
+export_results(results, param)
+
+param = Param(features='doc2vec', text_var='headline')
+results = logistic_regression(param)
+export_results(results, param)
+results = decision_tree(param)
+export_results(results, param)
+results = boosted_decision_tree(param)
+export_results(results, param)
+results = random_forest(param)
+export_results(results, param)
 
 #############
 # Sandbox

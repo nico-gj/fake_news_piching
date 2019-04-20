@@ -27,9 +27,9 @@ def export_results(results, param, roc_curve_title=""):
         roc_df = results['roc_df']
         plot_roc_curve(roc_df, param, roc_curve_title)
 
-#############
-# Runs
-#############
+##########################
+# Runs on Total Data
+##########################
 
 param = Param(features='tfidf', text_var='body')
 results = logistic_regression(param)
@@ -70,6 +70,13 @@ results = boosted_decision_tree(param)
 export_results(results, param)
 results = random_forest(param)
 export_results(results, param)
+
+##########################
+# Runs on First Axes of PCA
+##########################
+
+# TO DO!
+
 
 #############
 # Sandbox

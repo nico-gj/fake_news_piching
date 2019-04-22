@@ -45,7 +45,7 @@ def pca_and_plot(df_dict, text, features, hue_vars):
         sns.scatterplot(ax=ax, x=pca['pca_axis_1'], y=pca['pca_axis_2'], hue=pca[hue_var], s=25)
         ax = plt.gca()
         ax.set_title("Principal Component Analysis of {}".format(title_desc),  {'fontsize': 25})
-        plt.savefig('output/pca_{}_{}_{}.png'.format(features, text, hue_var), bbox_inches='tight')
+        plt.savefig('output/unsupervised_pca_{}_{}_{}.png'.format(features, text, hue_var), bbox_inches='tight')
 
     return pca
 

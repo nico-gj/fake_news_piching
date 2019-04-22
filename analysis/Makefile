@@ -12,13 +12,13 @@ data/doc2vec_body.csv data/doc2vec_body.npy data/doc2vec_headline.csv data/doc2v
 ## Exploratory LogReg and Tree
 ##################################
 
-output/exploratory_logreg_coefs_*.csv output/exploratory_tree_*.txt: source/exploratory_regressions.py data/tfidf_*.csv
+output/exploratory_*: source/exploratory_regressions.py data/tfidf_*.csv
 	python source/exploratory_regressions.py
 
 ##################################
 ## Unsupervised Classification
 ##################################
-output/pca_*.png: source/unsupervised_classification.py data/tfidf_*.npy data/doc2vec_*.npy
+output/unsupervised_*: source/unsupervised_classification.py data/tfidf_*.npy data/doc2vec_*.npy
 	python source/unsupervised_classification.py
 
 ##################################
@@ -30,4 +30,4 @@ output/model_*: source/supervised_classification.py data/tfidf_*.npy data/doc2ve
 ##################################
 ## Supervised Classification
 ##################################
-all: output/*
+all: output/exploratory_* output/unsupervised_* output/model_* 

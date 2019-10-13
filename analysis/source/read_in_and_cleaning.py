@@ -18,7 +18,7 @@ def classic_var_cleaning(df, var):
     df[var] = df[var].str.lower()
     return df[var]
 
-def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='george_mcintyre', extra_path=""):
+def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='george_mcintyre', extra_path="", fake_subset=None):
 
     if data == 'kaggle':
 
@@ -103,6 +103,11 @@ def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='geo
         df = df[df['body'].apply(lambda x: len(x.split(' '))>=min_len)]
         df = df[df['body'].apply(lambda x: len(x.split(' '))<=max_len)]
 
+    if fake_subset==0:
+        df = df[df['label']==0].reset_index(drop=True)
+    if fake_subset==1:
+        df = df[df['label']==1].reset_index(drop=True)
+
     ## Export
     df_dict = df.to_dict()
 
@@ -117,31 +122,3 @@ def print_data_by_id(df_dict, i):
         print(key)
         print(df_dict[key][i])
         print('')
-
-# def get_all_var(data, var):
-#     return data[var]
-#
-# def get_all_headlines(data):
-#     return [data[keys]["headline"] for keys in data.keys()]
-#
-# def get_all_labels(data):
-#     return [data[keys]["label"] for keys in data.keys()]
-#
-# def get_all_source(data):
-#     return [data[keys]["source"] for keys in data.keys()]
-#
-# def get_all_bodies(data):
-#     return [data[keys]["body"] for keys in data.keys()]
-#
-# def retrieve_specific_data_from_id(in_dict, id):
-#     headline = in_dict['headline'][id].split(" ")
-#     body = in_dict["body"][id].split(" ")
-#     source = in_dict["source"][id]
-#     return {'headline':headline, 'source':source, 'body':body}
-#
-# def get_dico_by_id(dico):
-#     new_dict = {}
-#     for i, id in enumerate(dico["headline"].keys()):
-#         data_id = retrieve_specific_data_from_id(dico, id)
-#         new_dict[i] = data_id
-#     return new_dict

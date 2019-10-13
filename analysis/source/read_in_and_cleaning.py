@@ -6,6 +6,8 @@ from tqdm import tqdm
 import glob
 import re
 import json
+import nltk
+nltk.download('wordnet')
 
 def classic_var_cleaning(df, var):
     df[var] = df[var].str.replace(r'\([^\)]+\)', ' ')
@@ -113,8 +115,15 @@ def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='geo
 
     return df_dict
 
-def retrieve_word_seq_text(df_dict, text_var):
+def retrieve_word_seq_text(df_dict, text_var, lemmatize=False):
     texts = [str.split(" ") for str in list(df_dict[text_var].values())]
+
+    if lemmatize==True:
+        lemma = nltk.wordnet.WordNetLemmatizer()
+        for text in texts:
+            for i in range(len(text)):
+                text[i] = lemma.lemmatize(text[i])
+
     return texts
 
 def print_data_by_id(df_dict, i):

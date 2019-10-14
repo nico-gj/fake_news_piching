@@ -105,6 +105,20 @@ def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='geo
         df = df[df['body'].apply(lambda x: len(x.split(' '))>=min_len)]
         df = df[df['body'].apply(lambda x: len(x.split(' '))<=max_len)]
 
+    if data=='isot':
+
+        ## Data Read In
+        df1 = pd.read_csv(extra_path+'data/raw/isot_victoria/True.csv')
+        df1['label'] = 0
+        df2 = pd.read_csv(extra_path+'data/raw/isot_victoria/Fake.csv')
+        df2['label'] = 1
+        df = pd.concat([df1, df2])
+        del df['subject']
+        df.rename(columns={'title':'headline', 'text':'body'}, inplace=True)
+
+        df['headline'] = classic_var_cleaning(df, 'headline')
+        df['body'] = classic_var_cleaning(df, 'body')
+
     if fake_subset==0:
         df = df[df['label']==0].reset_index(drop=True)
     if fake_subset==1:

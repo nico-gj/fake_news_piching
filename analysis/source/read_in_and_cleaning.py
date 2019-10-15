@@ -13,14 +13,14 @@ def classic_var_cleaning(df, var):
     df[var] = df[var].str.replace(r'\([^\)]+\)', ' ')
     df[var] = df[var].str.replace(r'\[[^\]]+\]', ' ')
     df[var] = df[var].str.replace(r'\n', ' ')
-    df[var] = df[var].str.replace(r'\.', '') # Replace periods by empty (D.C., for example)
+    df[var] = df[var].str.replace(r'\.', ' ') # Replace periods by empty (D.C., for example)
     df[var] = df[var].str.replace(r'\W+|\d+', ' ') # Remove all alpha-numeric characters
     df[var] = df[var].str.replace(r'\s+', ' ') # Remove double spaces
     df[var] = df[var].str.strip()
     df[var] = df[var].str.lower()
     return df[var]
 
-def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='george_mcintyre', extra_path="", fake_subset=None):
+def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='isot', extra_path="", fake_subset=None):
 
     if data == 'kaggle':
 
@@ -117,6 +117,10 @@ def read_in_and_clean(min_body_threshold=0.1, max_body_threshold=0.95, data='geo
         df.rename(columns={'title':'headline', 'text':'body'}, inplace=True)
 
         df['headline'] = classic_var_cleaning(df, 'headline')
+
+        df['body'] = df['body'].str.replace(r'(\d{4})([A-z])', r'\1 \2')
+        df['body'] = df['body'].str.replace(r'Featured\simage\svia\s[A-z\/\s]+$', r'')
+        df['body'] = df['body'].str.replace(r'Via\:\s[A-z\/\s]+$', r'')
         df['body'] = classic_var_cleaning(df, 'body')
 
     if fake_subset==0:

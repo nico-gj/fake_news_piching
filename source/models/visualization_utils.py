@@ -59,7 +59,7 @@ def plot_word_scatter(df, words):
     subset = df[df['word'].isin(words)].reset_index(drop=True)
     plt.scatter(subset['axis_1'], subset['axis_2'], s=50, c='red')
     plt.xlabel('PCA Axis 1')
-    plt.xlabel('PCA Axis 2')
+    plt.ylabel('PCA Axis 2')
 
     texts = []
     for x, y, s in zip(subset['axis_1'], subset['axis_2'], subset['word']):

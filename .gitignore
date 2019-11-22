@@ -8,6 +8,6 @@
 *.ipynb_checkpoints
 
 # Folders:
-data/
+data/raw/
 *_archives/
 notebooks/

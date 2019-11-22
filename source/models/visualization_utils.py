@@ -7,7 +7,7 @@ from adjustText import adjust_text
 import random
 random.seed(123)
 
-double_fig_size=(12, 6)
+double_fig_size=(10, 5)
 
 # Plot loss
 def moving_average(a, n):
@@ -27,7 +27,7 @@ def plot_loss(df, max_val=8, n=50):
 
 def loss_comparison(df_loss_true, df_loss_fake):
 
-    fig = plt.figure(figsize=double_fig_size)
+    fig = plt.figure(figsize=(10,3))
 
     fig.add_subplot(1,2,1)
     plot_loss(df_loss_true)

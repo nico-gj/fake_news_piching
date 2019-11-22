@@ -30,7 +30,7 @@ word_comparison(reduced_true, reduced_fake, words=["massachusetts", "texas", "ar
 word_comparison(reduced_true, reduced_fake, words=["monday", "tuesday", "wednesday", "thursday", "friday"], file_name='week_days')
 word_comparison(reduced_true, reduced_fake, words=["hillary", "crooked"], file_name='crooked_hillary')
 word_comparison(reduced_true, reduced_fake, words=["president", "leader", "puppet"], file_name='president_role')
-word_comparison(reduced_true, reduced_fake, words=["obama", "trump", "clinton", "cruz", "sander"], file_name='politician_names')
+word_comparison(reduced_true, reduced_fake, words=["obama", "trump", "clinton", "biden"], file_name='politician_names')
 word_comparison(reduced_true, reduced_fake, words=["isi", "muslim", "terrorist"], file_name='muslims')
 word_comparison(reduced_true, reduced_fake, words=["tax", "return", "foundation", "fraud"], file_name='taxes')
 word_comparison(reduced_true, reduced_fake, words=["democracy", "liberalism", "capitalism", "socialism", "liberal"], file_name='liberalism')
